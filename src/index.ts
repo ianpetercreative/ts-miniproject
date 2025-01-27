@@ -1,27 +1,25 @@
+const btn = document.getElementById("btn")!;
+const input = document.getElementById("todoinput")! as HTMLInputElement;
+const form = document.querySelector("form")!;
+const list = document.getElementById("todolist")! as HTMLUListElement;
+
 interface Todo {
     text: string;
     completed: boolean; 
 }
 
-const btn = document.getElementById("btn")!;
-const input = document.getElementById("todoinput")! as HTMLInputElement;
-const form = document.querySelector("form")!;
-const list = document.getElementById("todolist")! as HTMLUListElement;
+const todos: Todo[] = readTodos();
+todos.forEach(createTodo)
+
 // This is an alternative option:
 // (<HTMLInputElement>input).value
 // However, this second option is not useable in React, so it is less common.
 
-// btn.addEventListener("click", function() {
-//     alert(input.value);
-//     input.value = "";
-// })
-
-// form.addEventListener("submit", function(e){
-//     e.preventDefault(); 
-//     console.log("submitted")
-// })
-
-const todos: Todo[] = []; 
+function readTodos(): Todo[] {
+    const todosJSON = localStorage.getItem("todos");
+    if(todosJSON === null) return [];
+    return JSON.parse(todosJSON);
+}
 
 function handleSubmit(e: SubmitEvent){
     e.preventDefault();
@@ -30,7 +28,9 @@ function handleSubmit(e: SubmitEvent){
         completed: false
     };
     createTodo(newTodo);
-    todos.push(newTodo); 
+    todos.push(newTodo);
+
+    localStorage.setItem("todos", JSON.stringify(todos)); 
     input.value = ""; 
 }
 
